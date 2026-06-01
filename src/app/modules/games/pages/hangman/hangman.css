@@ -1,0 +1,243 @@
+﻿.game-shell {
+  width: min(92vw, 860px);
+  min-height: min(86vh, 740px);
+  margin: 0 auto;
+  padding: clamp(1rem, 3vh, 2rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+
+.game-shell-loss {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: stretch;
+  padding-top: clamp(1rem, 3vh, 2rem);
+}
+
+.game-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+.game-subtitle { margin-top: 0.35rem; color: var(--ink-soft); font-size: 1rem; }
+
+.stats-row {
+  margin-top: 0.4rem;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.negative-score { color: #b91c1c; }
+
+.hangman-stage {
+  --head-size: 11.4%;
+  --head-left: 53.30%;
+  --head-top: 23%;
+  --torso-size: 20%;
+  --torso-left: 49%;
+  --torso-top: 24%;
+  --arm-size: 15%;
+  --arm-left-left: 57%;
+  --arm-right-left: 46%;
+  --arm-top: 32%;
+  --leg-size: 15%;
+  --leg-left-left: 55%;
+  --leg-right-left: 48%;
+  --leg-top: 42%;
+  margin-top: 1rem;
+  width: min(560px, 100%);
+  aspect-ratio: 16 / 9;
+  position: relative;
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #d9d6ea;
+}
+
+.hangman-base {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+.hangman-part {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.head {
+  width: var(--head-size);
+  left: var(--head-left);
+  top: var(--head-top);
+  z-index: 30;
+}
+
+.torso {
+  width: var(--torso-size);
+  left: var(--torso-left);
+  top: var(--torso-top);
+  z-index: 20;
+}
+
+.arm {
+  width: var(--arm-size);
+  top: var(--arm-top);
+  z-index: 10;
+}
+
+.left-arm {
+  left: var(--arm-left-left);
+  transform: scaleX(-1) rotate(2deg);
+}
+
+.right-arm {
+  left: var(--arm-right-left);
+}
+
+.leg {
+  width: var(--leg-size);
+  top: var(--leg-top);
+  z-index: 10;
+}
+
+.left-leg {
+  left: var(--leg-left-left);
+  transform: scaleX(-1) rotate(-2deg);
+}
+
+.right-leg {
+  left: var(--leg-right-left);
+}
+
+.word {
+  margin-top: 1.1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.32rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+.letters {
+  margin-top: 1.1rem;
+  width: min(720px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+  gap: 0.6rem;
+}
+
+.letter-btn { min-height: 46px; }
+
+.result {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: center;
+  color: var(--ink);
+}
+
+.end-screen {
+  width: min(720px, 100%);
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.9rem, 2.2vh, 1.4rem);
+  text-align: center;
+}
+
+.end-screen-loss {
+  min-height: 100%;
+}
+
+.end-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.65rem, 2vh, 1rem);
+}
+
+.end-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
+.end-title-win { color: #166534; }
+
+.end-title-loss { color: #991b1b; }
+
+.end-title-loss-big {
+  color: #b91c1c;
+  font-size: clamp(2.8rem, 7vw, 4.4rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  margin: 0;
+}
+
+.end-subtitle {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.end-label {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.end-word {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.end-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0;
+}
+
+.end-detail-list .game-subtitle {
+  margin: 0;
+}
+
+.end-stats {
+  margin-top: 0.2rem;
+}
+
+.actions-row {
+  margin-top: clamp(0.7rem, 2vh, 1.2rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+

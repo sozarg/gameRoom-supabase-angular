@@ -1,0 +1,110 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Minecraftia';
+  src: url('/assets/fonts/minecraftia.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-display: 'Minecraftia', monospace;
+  --font-body: 'Minecraftia', monospace;
+
+  --bg: #f4f2ff;
+  --surface: #ffffff;
+  --ink: #14161e;
+  --ink-soft: #4d5262;
+  --lav: #b9b7ff;
+  --mint: #89f0df;
+  --line: #14161e;
+  --r: 12px;
+  --shadow: 6px 6px 0 var(--ink);
+  --ring: 0 0 0 3px rgba(185, 183, 255, 0.55);
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+* {
+  font-family: 'Minecraftia', monospace;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+@layer components {
+  .progra-title {
+    @apply text-3xl md:text-4xl mb-4 font-bold;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    line-height: 1.18;
+  }
+
+  .progra-subtitle {
+    @apply text-base mb-2;
+    color: var(--ink);
+    line-height: 1.35;
+    font-weight: 700;
+  }
+
+  .progra-text {
+    @apply text-base leading-relaxed;
+    color: var(--ink-soft);
+  }
+
+  .progra-btn {
+    @apply px-5 py-2 rounded-[var(--r)] font-semibold transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .progra-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .progra-btn-primary {
+    background: var(--lav);
+    color: var(--ink);
+  }
+
+  .progra-btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .progra-input {
+    @apply w-full px-4 py-2 rounded-[var(--r)] outline-none transition-all;
+    background: var(--surface);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+
+  .progra-input::placeholder {
+    color: #787d8a;
+  }
+
+  .progra-input:focus,
+  .progra-btn:focus-visible {
+    box-shadow: var(--ring), var(--shadow);
+  }
+}

@@ -1,0 +1,232 @@
+﻿<section class="game-shell" [class.game-shell-end]="gameOver">
+  <h1 class="game-title" *ngIf="!gameOver || status !== 'win'">Escapa de la habitación</h1>
+
+  <!-- escena interactiva principal mientras la partida sigue activa -->
+  <ng-container *ngIf="!gameOver; else endScreen">
+    <div class="stats-row">
+      <p class="game-subtitle">Tiempo: {{ timeLabel }}</p>
+    </div>
+
+    <p class="game-message" [class.game-message-error]="messageIsError">{{ message }}</p>
+
+    <!-- escenario con sprites visuales y hotspots clickeables -->
+    <div class="room-stage">
+      <img class="room-base" src="assets/habitacion-dentro.png" alt="Habitación para escapar" draggable="false" />
+
+      <img
+        class="sprite desk-sprite"
+        [ngStyle]="deskSpriteStyle"
+        [src]="deskOpened ? 'assets/escritorio-abierto-dentro.png' : 'assets/escritorio-cerrado-dentro.png'"
+        alt="Escritorio"
+        draggable="false"
+      />
+
+      <img
+        class="sprite frame-sprite"
+        [ngStyle]="frameSpriteStyle"
+        src="assets/cuadro-normal-dentro.png"
+        alt="Cuadro"
+        draggable="false"
+      />
+
+      <img
+        class="sprite safe-sprite"
+        [class.safe-shake]="safeShake"
+        [ngStyle]="safeSpriteStyle"
+        [class.safe-opened]="safeOpened"
+        [src]="safeOpened ? 'assets/caja-fuerte-abierta-dentro.png' : 'assets/caja-fuerte-cerrada-dentro.png'"
+        alt="Caja fuerte"
+        draggable="false"
+      />
+
+      <img
+        class="sprite door-sprite"
+        [class.door-shake]="doorShake"
+        [ngStyle]="doorSpriteStyle"
+        [src]="doorUnlocked ? 'assets/puerta-abierta-dentro.png' : 'assets/puerta-cerrada-dentro.png'"
+        alt="Puerta"
+        draggable="false"
+      />
+      <img
+        class="sprite cat-sprite"
+        [ngStyle]="catSpriteStyle"
+        [src]="catAngry ? 'assets/gatito-enojado-dentro.png' : 'assets/gatito-feliz-dentro.png'"
+        alt="Gatito"
+        draggable="false"
+      />
+      <img
+        class="sprite rug-sprite"
+        [ngStyle]="rugSpriteStyle"
+        [src]="rugRolled ? 'assets/alfombra-enrollada-dentro.png' : 'assets/alfombra-plana-dentro.png'"
+        alt="Alfombra"
+        draggable="false"
+      />
+      <img
+        class="sprite deco-frame-sprite"
+        [class.deco-frame-shake]="decoFrame2Shake"
+        [ngStyle]="decoFrame2Style"
+        src="assets/cuadro2-dentro.png"
+        alt="Cuadro decorativo 2"
+        draggable="false"
+      />
+      <img
+        class="sprite deco-frame-sprite"
+        [class.deco-frame-shake]="decoFrame3Shake"
+        [ngStyle]="decoFrame3Style"
+        src="assets/cuadro3-dentro.png"
+        alt="Cuadro decorativo 3"
+        draggable="false"
+      />
+      <img
+        class="sprite deco-frame-sprite"
+        [class.deco-frame-shake]="decoFrame4Shake"
+        [ngStyle]="decoFrame4Style"
+        src="assets/cuadro4-dentro.png"
+        alt="Cuadro decorativo 4"
+        draggable="false"
+      />
+
+      <!-- la nota aparece despues de abrir el cajon -->
+      <img *ngIf="deskOpened" class="sprite note-sprite" [ngStyle]="noteSpriteStyle" src="assets/nota-dentro.png" alt="Nota" draggable="false" />
+      <!-- la llave aparece cuando la caja fuerte ya esta abierta -->
+      <img *ngIf="safeOpened && !keyCollected" class="sprite key-sprite" [ngStyle]="keySpriteStyle" src="assets/llave-dentro.png" alt="Llave" draggable="false" />
+
+      <!-- cada boton hotspot marca un area invisible clickeable sobre el escenario -->
+      <button
+        type="button"
+        class="hotspot desk-hotspot"
+        [ngStyle]="deskHotspotStyle"
+        [class.hotspot-done]="deskDone"
+        [disabled]="gameOver || deskDone"
+        (click)="openDesk()"
+      >
+        {{ deskOpened ? 'Cajón abierto' : 'Abrir escritorio' }}
+      </button>
+
+      <button type="button" class="hotspot note-hotspot" *ngIf="deskOpened" [ngStyle]="noteHotspotStyle" [disabled]="gameOver" (click)="pickNote()">
+        Tomar nota
+      </button>
+      <button type="button" class="hotspot key-hotspot" *ngIf="safeOpened && !keyCollected" [ngStyle]="keyHotspotStyle" [disabled]="gameOver" (click)="pickKey()">
+        Tomar llave
+      </button>
+
+      <button
+        type="button"
+        class="hotspot frame-hotspot"
+        [ngStyle]="frameHotspotStyle"
+        [class.hotspot-done]="frameDone"
+        [disabled]="gameOver || frameDone"
+        (click)="quickMoveFrame()"
+      >
+        {{ frameMoved ? 'Cuadro movido' : 'Mover cuadro' }}
+      </button>
+
+      <button
+        type="button"
+        class="hotspot safe-hotspot"
+        [ngStyle]="safeHotspotStyle"
+        [class.hotspot-done]="safeDone"
+        [class.safe-hotspot-locked]="safeLocked || safeDone"
+        [disabled]="safeLocked || safeDone"
+        (click)="openSafe()"
+      >
+        {{ safeOpened ? 'Caja fuerte abierta' : 'Abrir caja fuerte' }}
+      </button>
+
+      <button type="button" class="hotspot door-hotspot" [ngStyle]="doorHotspotStyle" [disabled]="gameOver" (click)="tryDoor()">
+        Abrir puerta
+      </button>
+      <button type="button" class="hotspot cat-hotspot" [ngStyle]="catHotspotStyle" [disabled]="gameOver" (click)="toggleCatMood()">
+        Cambiar gatito
+      </button>
+      <button type="button" class="hotspot rug-hotspot" [ngStyle]="rugHotspotStyle" [disabled]="gameOver" (click)="toggleRug()">
+        Cambiar alfombra
+      </button>
+      <button type="button" class="hotspot deco-frame-hotspot" [ngStyle]="decoFrame2Style" [disabled]="gameOver" (click)="pokeDecoFrame(2)">
+        Cuadro decorativo 2
+      </button>
+      <button type="button" class="hotspot deco-frame-hotspot" [ngStyle]="decoFrame3Style" [disabled]="gameOver" (click)="pokeDecoFrame(3)">
+        Cuadro decorativo 3
+      </button>
+      <button type="button" class="hotspot deco-frame-hotspot" [ngStyle]="decoFrame4Style" [disabled]="gameOver" (click)="pokeDecoFrame(4)">
+        Cuadro decorativo 4
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- resumen final de victoria o derrota -->
+  <ng-template #endScreen>
+    <section class="end-screen-card">
+      <h2 class="end-screen-title" [ngClass]="{ 'end-screen-title-error': status === 'loss', 'end-screen-title-success': status === 'win' }">
+        {{ status === 'win' ? '¡Felicidades!' : 'Perdiste!' }}
+      </h2>
+
+      <ng-container *ngIf="status === 'win'; else lossCopy">
+        <p class="game-subtitle">Solo personas muy inteligentes logran escapar de la habitación.</p>
+        <div class="end-stats-row">
+          <p class="game-subtitle">Te tardaste {{ durationSeconds }} segundos y te sobraron {{ remainingSeconds }} segundos.</p>
+        </div>
+      </ng-container>
+
+      <ng-template #lossCopy>
+        <p class="game-subtitle">{{ message }}</p>
+        <div class="end-stats-row">
+          <p class="game-subtitle">Tiempo usado: {{ durationSeconds }}s</p>
+          <p class="game-subtitle">Errores de código: {{ wrongAttempts }}</p>
+        </div>
+      </ng-template>
+
+      <div class="actions-row end-actions-row">
+        <button type="button" class="progra-btn progra-btn-primary" (click)="startGame()">
+          Reiniciar partida
+        </button>
+        <a class="progra-btn progra-btn-secondary" routerLink="/home">Volver al inicio</a>
+      </div>
+    </section>
+  </ng-template>
+</section>
+
+<!-- modal para leer la pista de la nota -->
+<div *ngIf="showNoteModal" class="overlay">
+  <article class="modal-card">
+    <h3 class="modal-title">Nota encontrada</h3>
+    <p class="modal-text"><strong>2 - 9 - 7 - 4</strong></p>
+    <p class="modal-text">¿Para qué será?</p>
+    <button type="button" class="progra-btn progra-btn-primary" (click)="closeNoteModal()">
+      Volver
+    </button>
+  </article>
+</div>
+
+<!-- modal con teclado para validar la contraseña de caja fuerte -->
+<div *ngIf="showSafeModal" class="overlay">
+  <article class="modal-card">
+    <h3 class="modal-title">Caja fuerte</h3>
+    <p class="modal-text">Ingresa la contraseña.</p>
+    <p class="code-display">{{ safeCodeInput || '----' }}</p>
+
+    <div class="keypad-grid">
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('1')">1</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('2')">2</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('3')">3</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('4')">4</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('5')">5</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('6')">6</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('7')">7</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('8')">8</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('9')">9</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('clear')">C</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('0')">0</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="keypad('back')">Del</button>
+    </div>
+
+    <div class="keypad-actions">
+      <button type="button" class="progra-btn progra-btn-primary" (click)="submitSafeCode()">Confirmar</button>
+      <button type="button" class="progra-btn progra-btn-secondary" (click)="closeSafeModal()">Cerrar</button>
+    </div>
+  </article>
+</div>
+
+
+
+

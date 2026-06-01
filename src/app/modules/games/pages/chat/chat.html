@@ -1,0 +1,40 @@
+<section class="chat-shell">
+  <h1 class="chat-title">Chat global</h1>
+
+  <!-- lista viva: mezcla mensajes confirmados y pendientes -->  <div class="chat-list" #chatList>
+    <article
+      class="chat-item"
+      *ngFor="let msg of mensajes"
+      [class.mine]="isMine(msg)"
+      [class.other]="!isMine(msg)"
+    >
+      <strong class="chat-author" *ngIf="!isMine(msg)">{{ msg.display_name || 'Usuario' }}</strong>
+      <div class="chat-bubble">
+        <p>{{ msg.message_text }}</p>
+      </div>
+      <div class="chat-meta">
+        <span *ngIf="!msg.pending && msg.created_at; else pendingTime">{{ msg.created_at | date: 'HH:mm:ss' }}</span>
+        <ng-template #pendingTime>
+          <span *ngIf="msg.pending; else noTime">Enviando...</span>
+          <ng-template #noTime>-</ng-template>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+
+  <!-- input con envio por enter o boton -->  <div class="chat-form">
+    <input
+      type="text"
+      [(ngModel)]="nuevoMensaje"
+      placeholder="Escribí un mensaje"
+      class="chat-input"
+      aria-label="Mensaje del chat"
+      (keyup.enter)="enviar()"
+    />
+    <button type="button" class="progra-btn progra-btn-primary" (click)="enviar()" aria-label="Enviar mensaje">
+      Enviar
+    </button>
+  </div>
+</section>
+
+

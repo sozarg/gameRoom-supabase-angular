@@ -1,0 +1,322 @@
+.game-shell {
+  /* define la tarjeta principal del juego con layout compacto centrado */
+  max-width: 920px;
+  margin: 0.95rem auto;
+  min-height: auto;
+  padding: 0.75rem 0.8rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+
+.game-shell.game-shell-end {
+  /* en pantalla final reservamos mas alto para centrar el resumen */
+  min-height: min(700px, calc(100vh - 210px));
+  justify-content: center;
+}
+
+.game-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+.game-subtitle {
+  margin-top: 0.35rem;
+  color: var(--ink-soft);
+  font-size: 1rem;
+}
+
+.stats-row {
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.game-message {
+  min-height: 1.2rem;
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.game-message-error {
+  color: #b91c1c;
+}
+
+.room-stage {
+  /* este bloque contiene el fondo base y todos los sprites posicionados */
+  width: min(760px, 100%);
+  aspect-ratio: 4 / 3;
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  background: #dbd8ef;
+}
+
+.room-base {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) brightness(0.97);
+}
+
+.sprite {
+  /* todos los sprites se dibujan absolutos y no capturan puntero directo */
+  position: absolute;
+  z-index: 5;
+  user-select: none;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.desk-sprite {
+  z-index: 8;
+}
+
+.frame-sprite {
+  z-index: 10;
+  transition: left 200ms ease, top 200ms ease;
+}
+
+.safe-sprite {
+  z-index: 6;
+  clip-path: inset(7% 7% 7% 7%);
+}
+
+.safe-sprite.safe-opened {
+  clip-path: inset(7% 6% 6% 6%);
+}
+
+.safe-sprite.safe-shake {
+  animation: deco-frame-shake 220ms linear;
+}
+
+.door-sprite {
+  z-index: 7;
+}
+
+.door-sprite.door-shake {
+  animation: deco-frame-shake 220ms linear;
+}
+
+.cat-sprite {
+  z-index: 12;
+  image-rendering: pixelated;
+}
+
+.rug-sprite {
+  z-index: 4;
+  image-rendering: pixelated;
+}
+
+.deco-frame-sprite {
+  z-index: 6;
+  image-rendering: pixelated;
+  transform-origin: center;
+}
+
+.deco-frame-sprite.deco-frame-shake {
+  animation: deco-frame-shake 220ms linear;
+}
+
+.note-sprite {
+  z-index: 11;
+  filter: drop-shadow(0 0 6px rgba(185, 183, 255, 0.95));
+  animation: note-pulse 1.15s ease-in-out infinite;
+}
+
+.key-sprite {
+  z-index: 11;
+  filter: drop-shadow(0 0 6px rgba(185, 183, 255, 0.95));
+  animation: note-pulse 1.15s ease-in-out infinite;
+}
+
+.hotspot {
+  /* los hotspots son capas invisibles para click sobre cada objeto */
+  position: absolute;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: transparent;
+  padding: 0;
+  box-shadow: none;
+  font-size: 0;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.hotspot:hover:not(:disabled) {
+  background: transparent;
+}
+
+.hotspot:disabled {
+  cursor: default;
+}
+
+.hotspot.hotspot-done {
+  pointer-events: none;
+}
+
+.frame-hotspot {
+  transition: left 200ms ease, top 200ms ease;
+}
+
+.safe-hotspot-locked {
+  pointer-events: none;
+}
+
+.overlay {
+  /* fondo modal que bloquea la escena mientras se interactua con pista o keypad */
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 17, 24, 0.45);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  z-index: 2200;
+}
+
+.modal-card {
+  /* tarjeta modal reutilizable para nota y caja fuerte */
+  width: min(440px, 100%);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.modal-title {
+  margin: 0;
+  text-align: center;
+  color: var(--ink);
+}
+
+.modal-text {
+  margin: 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.code-display {
+  margin: 0;
+  text-align: center;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem;
+  background: var(--bg);
+  color: var(--ink);
+  letter-spacing: 0.24em;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.keypad-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.end-screen-card {
+  /* tarjeta de cierre para victoria o derrota */
+  width: min(560px, 100%);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  background: var(--bg);
+  min-height: 360px;
+  padding: 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+}
+
+.end-screen-title {
+  margin: 0;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.end-screen-title-success {
+  color: #166534;
+}
+
+.end-screen-title-error {
+  color: #b91c1c;
+}
+
+.end-stats-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.end-actions-row {
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+@keyframes note-pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(185, 183, 255, 0.8));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(185, 183, 255, 1));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(185, 183, 255, 0.8));
+  }
+}
+
+@keyframes deco-frame-shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-2px); }
+  80% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+@media (max-width: 700px) {
+  .game-shell {
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .room-stage {
+    width: 100%;
+  }
+}

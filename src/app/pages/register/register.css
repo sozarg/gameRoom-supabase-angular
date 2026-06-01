@@ -1,0 +1,21 @@
+﻿.auth-page {
+    min-height: calc(100vh - 170px);
+    display: grid;
+    place-items: start center;
+    padding: 72px 16px 16px;
+}
+
+.auth-card {
+    width: min(520px, 100%);
+    padding: 24px;
+}
+
+.neo-card {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--r);
+    box-shadow: var(--shadow);
+}
+
+
+

@@ -1,0 +1,31 @@
+﻿<nav class="navbar">
+    <div class="nav-left">
+        <button class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <!-- menu responsive: la clase open depende del signal isMenuOpen -->
+        <div class="nav-links" [class.open]="isMenuOpen()">
+            <a class="nav-chip nav-link-chip" routerLink="/home" routerLinkActive="active" (click)="closeMenu()">Inicio</a>
+            <a class="nav-chip nav-link-chip" routerLink="/resultados" routerLinkActive="active" (click)="closeMenu()">Resultados</a>
+            <a class="nav-chip nav-link-chip" routerLink="/about-me" routerLinkActive="active" (click)="closeMenu()">Sobre mí</a>
+        </div>
+    </div>
+
+    <div class="nav-right auth-actions">
+        <!-- si hay sesion muestra usuario + logout, si no muestra login/register -->
+        <ng-container *ngIf="user$ | async as user; else guestActions">
+            <span class="nav-chip nav-user-chip" *ngIf="user.user_metadata?.firstName">
+                {{ user.user_metadata?.firstName }}
+            </span>
+            <button (click)="logout()" class="nav-action nav-action-secondary">Cerrar sesión</button>
+        </ng-container>
+
+        <ng-template #guestActions>
+            <a routerLink="/login" routerLinkActive="active" class="nav-action nav-action-primary" (click)="closeMenu()">Iniciar sesión</a>
+            <a routerLink="/register" routerLinkActive="active" class="nav-action nav-action-secondary" (click)="closeMenu()">Registrarse</a>
+        </ng-template>
+    </div>
+</nav>

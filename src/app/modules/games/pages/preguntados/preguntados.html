@@ -1,0 +1,84 @@
+<section class="game-shell">
+  <h1 class="game-title">Preguntados</h1>
+
+  <!-- juego activo: pregunta actual + opciones -->  <ng-container *ngIf="!gameOver; else endScreen">
+  <p class="game-subtitle" *ngIf="initializing">Cargando banderas...</p>
+  <p class="game-subtitle game-subtitle-error" *ngIf="errorCarga">{{ errorCarga }}</p>
+
+  <div class="stats-row" *ngIf="!errorCarga">
+    <p class="game-subtitle">Puntaje: {{ score }}</p>
+    <p class="game-subtitle">Aciertos: {{ correctAnswers }}</p>
+    <p class="game-subtitle">Errores: {{ wrongAnswers }}</p>
+    <p class="game-subtitle">Vidas: {{ livesLeft }}</p>
+    <p class="game-subtitle">Pregunta: {{ roundsPlayed + (gameOver ? 0 : 1) }} / 10</p>
+  </div>
+
+  <div class="question-card" *ngIf="currentQuestion as question">
+    <p class="question-label">¿De qué país es esta bandera?</p>
+    <img class="flag-image" [src]="question.country.flag" [alt]="'Bandera de ' + question.country.name" />
+    <div class="options-grid">
+      <button
+        *ngFor="let option of question.options"
+        type="button"
+        class="progra-btn progra-btn-secondary option-btn"
+        [ngClass]="getOptionClass(option)"
+        [disabled]="answerLocked || gameOver || loading || initializing"
+        (click)="answer(option)"
+      >
+        {{ option }}
+      </button>
+    </div>
+  </div>
+
+  <p class="game-message" [ngClass]="{ 'game-message-success': messageTone === 'success', 'game-message-error': messageTone === 'error' }">{{ mensaje }}</p>
+
+  <div class="actions-row">
+    <button
+      *ngIf="errorCarga"
+      type="button"
+      class="progra-btn progra-btn-primary"
+      [disabled]="loading || initializing"
+      (click)="startGame()"
+    >
+      Reintentar
+    </button>
+
+    <button
+      *ngIf="gameOver"
+      type="button"
+      class="progra-btn progra-btn-primary"
+      [disabled]="loading || initializing || savingResult"
+      (click)="startGame()"
+    >
+      Reiniciar partida
+    </button>
+  </div>
+  </ng-container>
+
+  <!-- cierre de ronda con resumen -->  <ng-template #endScreen>
+    <section class="end-screen-card">
+      <h2 class="end-screen-title" [ngClass]="{ 'end-screen-title-error': status === 'loss', 'end-screen-title-success': status === 'win' }">
+        {{ status === 'loss' ? '¡Perdiste!' : '¡Ganaste!' }}
+      </h2>
+
+      <p class="game-subtitle" *ngIf="lastCorrectCountryName"><strong>País correcto:</strong> {{ lastCorrectCountryName }}</p>
+
+      <div class="end-stats-row">
+        <p class="game-subtitle">Puntaje: {{ score }}</p>
+        <p class="game-subtitle">Aciertos: {{ correctAnswers }}</p>
+        <p class="game-subtitle">Errores: {{ wrongAnswers }}</p>
+      </div>
+
+      <div class="actions-row end-actions-row">
+        <button type="button" class="progra-btn progra-btn-primary" [disabled]="loading || initializing || savingResult" (click)="startGame()">
+          Reiniciar partida
+        </button>
+        <button type="button" class="progra-btn progra-btn-secondary" routerLink="/home">
+          Volver al inicio
+        </button>
+      </div>
+    </section>
+  </ng-template>
+</section>
+
+

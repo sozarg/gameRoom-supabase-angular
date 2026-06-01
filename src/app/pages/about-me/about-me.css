@@ -1,0 +1,69 @@
+﻿.about-shell {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 20px 90px;
+}
+
+.about-card {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+}
+
+.profile-head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 10px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--line);
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--line);
+}
+
+.profile-name {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ink);
+}
+
+.profile-bio,
+.info-block p,
+.loading { color: var(--ink-soft); }
+
+.profile-stat,
+.info-block h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+
+.github-link {
+  margin-top: 4px;
+  padding: 8px 16px;
+  border-radius: var(--r);
+  background: var(--lav);
+  color: var(--ink);
+  text-decoration: none;
+  border: 2px solid var(--line);
+  box-shadow: var(--shadow);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+}
+
+.info-block { margin-top: 20px; }
+
+@media (max-width: 768px) {
+  .about-shell { padding: 24px 12px 100px; }
+  .about-card { padding: 20px; }
+}

@@ -1,0 +1,100 @@
+﻿<!-- solo usuarios autenticados pueden ver rankings -->
+<section class="results-shell" *ngIf="isAuthenticated; else blockedView">
+  <div class="results-header">
+    <h1 class="results-title">Resultados</h1>
+    <p class="results-subtitle">Tabla de ranking para los mejores jugadores en cada juego.</p>
+  </div>
+
+  <p *ngIf="loading" class="results-state">Cargando rankings...</p>
+  <p *ngIf="!loading && error" class="results-state results-state-error">{{ error }}</p>
+
+  <!-- render principal cuando ya termino la carga y no hubo error -->
+  <ng-container *ngIf="!loading && !error">
+    <div class="results-tabs">
+      <button type="button" class="progra-btn" [ngClass]="selectedGame === 'ahorcado' ? 'progra-btn-primary' : 'progra-btn-secondary'" (click)="setSelectedGame('ahorcado')">Ahorcado</button>
+      <button type="button" class="progra-btn" [ngClass]="selectedGame === 'mayor-menor' ? 'progra-btn-primary' : 'progra-btn-secondary'" (click)="setSelectedGame('mayor-menor')">Mayor o Menor</button>
+      <button type="button" class="progra-btn" [ngClass]="selectedGame === 'preguntados' ? 'progra-btn-primary' : 'progra-btn-secondary'" (click)="setSelectedGame('preguntados')">Preguntados</button>
+      <button type="button" class="progra-btn" [ngClass]="selectedGame === 'escapa' ? 'progra-btn-primary' : 'progra-btn-secondary'" (click)="setSelectedGame('escapa')">Habitación</button>
+    </div>
+
+    <article class="results-card" *ngIf="selectedGame === 'ahorcado'">
+      <h2 class="progra-subtitle">Ahorcado</h2>
+      <div class="table-wrap" *ngIf="hangman.length; else emptyHangman">
+        <table class="results-table">
+          <thead><tr><th>#</th><th>Jugador</th><th>Puntaje</th><th>Aciertos</th><th>Errores</th><th>Tiempo</th><th>Fecha</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let row of hangman; let i = index" [class]="podiumClass(i)">
+              <td>{{ rank(i) }}</td><td>{{ row.player }}</td><td>{{ row.score }}</td><td>{{ row.correct_guesses }}</td><td>{{ row.wrong_guesses }}</td><td>{{ formatTime(row.duration_seconds) }}</td><td>{{ formatDate(row.finished_at) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyHangman><p class="results-empty">Sin resultados aún.</p></ng-template>
+    </article>
+
+    <article class="results-card" *ngIf="selectedGame === 'mayor-menor'">
+      <h2 class="progra-subtitle">Mayor o Menor</h2>
+      <div class="table-wrap" *ngIf="higherLower.length; else emptyHigher">
+        <table class="results-table">
+          <thead><tr><th>#</th><th>Jugador</th><th>Puntaje</th><th>Racha</th><th>Aciertos</th><th>Errores</th><th>Empates</th><th>Tiempo</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let row of higherLower; let i = index" [class]="podiumClass(i)">
+              <td>{{ rank(i) }}</td><td>{{ row.player }}</td><td>{{ row.score }}</td><td>{{ row.best_streak }}</td><td>{{ row.correct_guesses }}</td><td>{{ row.wrong_guesses }}</td><td>{{ row.ties_count }}</td><td>{{ formatTime(row.duration_seconds) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyHigher><p class="results-empty">Sin resultados aún.</p></ng-template>
+    </article>
+
+    <article class="results-card" *ngIf="selectedGame === 'preguntados'">
+      <h2 class="progra-subtitle">Preguntados</h2>
+      <div class="table-wrap" *ngIf="preguntados.length; else emptyPreguntados">
+        <table class="results-table">
+          <thead><tr><th>#</th><th>Jugador</th><th>Puntaje</th><th>Aciertos</th><th>Errores</th><th>Preguntas</th><th>Tiempo</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let row of preguntados; let i = index" [class]="podiumClass(i)">
+              <td>{{ rank(i) }}</td><td>{{ row.player }}</td><td>{{ row.score }}</td><td>{{ row.correct_answers }}</td><td>{{ row.wrong_answers }}</td><td>{{ row.total_questions }}</td><td>{{ formatTime(row.duration_seconds) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyPreguntados><p class="results-empty">Sin resultados aún.</p></ng-template>
+    </article>
+
+    <article class="results-card" *ngIf="selectedGame === 'escapa'">
+      <h2 class="progra-subtitle">Escapa de la Habitación</h2>
+      <div class="table-wrap" *ngIf="escapeRoom.length; else emptyEscape">
+        <table class="results-table">
+          <thead><tr><th>#</th><th>Jugador</th><th>Tiempo usado</th><th>Segundos sobrantes</th><th>Fecha</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let row of escapeRoom; let i = index" [class]="podiumClass(i)">
+              <td>{{ rank(i) }}</td><td>{{ row.player }}</td><td>{{ row.duration_seconds }}s</td><td>{{ row.score }}s</td><td>{{ formatDate(row.finished_at) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #emptyEscape><p class="results-empty">Sin resultados aún.</p></ng-template>
+    </article>
+  </ng-container>
+</section>
+
+<!-- fallback para invitados -->
+<ng-template #blockedView>
+  <section class="guest-layout">
+    <article class="guest-main-card">
+      <h1 class="guest-title">Contenido bloqueado</h1>
+      <p class="guest-text">No puedes ver la tabla de resultados hasta que te registres o inicies sesión. ¡Logeate y divertite!</p>
+      <div class="guest-logo-wrap">
+        <img src="logo.png" alt="Logo" class="guest-logo">
+      </div>
+      <div class="guest-actions">
+        <button routerLink="/login" class="progra-btn progra-btn-primary">Iniciar sesión</button>
+        <button routerLink="/register" class="progra-btn progra-btn-secondary">Registrarse</button>
+      </div>
+    </article>
+  </section>
+</ng-template>
+
+
+

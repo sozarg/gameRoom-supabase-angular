@@ -1,0 +1,60 @@
+<section class="game-shell">
+  <h1 class="game-title">Mayor o Menor</h1>
+
+  <!-- juego activo -->
+  <ng-container *ngIf="!gameOver; else endScreen">
+    <p class="game-subtitle" *ngIf="initializing">Preparando partida...</p>
+    <div class="stats-row">
+      <p class="game-subtitle">Puntaje: <strong [class.negative-score]="score < 0">{{ score }}</strong></p>
+      <p class="game-subtitle">Aciertos: {{ correctGuesses }}</p>
+      <p class="game-subtitle">Empates: {{ tiesCount }}</p>
+      <p class="game-subtitle">Vidas: {{ livesLeft }}</p>
+      <p class="game-subtitle">Cartas restantes: {{ remainingCards }}</p>
+    </div>
+
+    <div class="card-view" *ngIf="currentCard as card">
+      <p class="card-title">Carta actual</p>
+      <img *ngIf="card.image; else localCard" class="card-image" [src]="card.image" [alt]="'Carta ' + card.code" />
+      <ng-template #localCard>
+        <div class="card-number">{{ card.valueLabel }}</div>
+      </ng-template>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="progra-btn progra-btn-primary" [disabled]="gameOver || initializing || drawingCard || loading" (click)="guess('mayor')">
+        Mayor
+      </button>
+      <button type="button" class="progra-btn progra-btn-secondary" [disabled]="gameOver || initializing || drawingCard || loading" (click)="guess('menor')">
+        Menor
+      </button>
+    </div>
+
+    <p class="game-message">{{ mensaje }}</p>
+  </ng-container>
+
+  <!-- pantalla de cierre con resumen -->
+  <ng-template #endScreen>
+    <div class="end-screen">
+      <h2 class="end-title" [class.end-title-win]="status === 'win'" [class.end-title-loss]="status === 'loss'">
+        {{ status === 'win' ? 'Ganaste la partida' : 'Perdiste la partida' }}
+      </h2>
+
+      <p class="end-subtitle">{{ mensaje }}</p>
+
+      <div class="stats-row end-stats">
+        <p class="game-subtitle">Puntaje final: {{ score }}</p>
+        <p class="game-subtitle">Aciertos: {{ correctGuesses }}</p>
+        <p class="game-subtitle">Empates: {{ tiesCount }}</p>
+        <p class="game-subtitle">Errores: {{ wrongGuesses }}</p>
+        <p class="game-subtitle">Vidas restantes: {{ livesLeft }}</p>
+        <p class="game-subtitle">Cartas restantes: {{ remainingCards }}</p>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="progra-btn progra-btn-primary" [disabled]="initializing || drawingCard || loading" (click)="startGame()">Reiniciar partida</button>
+        <a class="progra-btn progra-btn-secondary" routerLink="/home">Volver al inicio</a>
+      </div>
+    </div>
+  </ng-template>
+</section>
+

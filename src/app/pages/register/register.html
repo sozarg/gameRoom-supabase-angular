@@ -1,0 +1,65 @@
+<div class="auth-page">
+  <div class="auth-card neo-card">
+    <div class="text-center mb-8">
+      <h1 class="progra-title !mb-2">Crear Cuenta</h1>
+      <p class="progra-text text-sm">Únete a la Sala de Juegos y guarda tus puntajes</p>
+    </div>
+
+    <!-- formulario reactivo de registro -->    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Nombre</label>
+          <input type="text" formControlName="firstName" class="progra-input py-2" placeholder="Nombre">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Apellido</label>
+          <input type="text" formControlName="lastName" class="progra-input py-2" placeholder="Apellido">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-1">
+          <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Edad</label>
+          <input type="number" formControlName="age" class="progra-input py-2" placeholder="Edad">
+        </div>
+        <div class="col-span-2">
+          <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Correo electrónico</label>
+          <input type="email" formControlName="email" class="progra-input py-2" placeholder="ejemplo@correo.com">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Contraseña</label>
+        <input type="password" formControlName="password" class="progra-input py-2" placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <button type="submit" appInteraction class="progra-btn progra-btn-primary w-full py-3 flex items-center justify-center">
+        <span *ngIf="!loading">Registrarse</span>
+        <span *ngIf="loading" class="animate-pulse">Procesando...</span>
+      </button>
+    </form>
+
+    <!-- modal para mostrar errores de alta o auth -->    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/25 px-4" (click)="closeModal()">
+      <div class="neo-card w-full max-w-sm p-6" (click)="$event.stopPropagation()">
+        <h2 class="text-lg font-bold text-[var(--ink)] mb-2">No se pudo continuar</h2>
+        <p class="text-sm text-[var(--ink-soft)]">{{ modalMessage }}</p>
+        <div class="mt-5 flex justify-end">
+          <button type="button" class="progra-btn progra-btn-primary" (click)="closeModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 pt-6 border-t-2 border-[var(--line)] text-center">
+      <p class="progra-text text-sm mb-4">
+        ¿Ya tienes cuenta?
+        <a routerLink="/login" class="text-[var(--ink)] font-semibold underline">Inicia sesión</a>
+      </p>
+      <div class="flex justify-center">
+        <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain opacity-90">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

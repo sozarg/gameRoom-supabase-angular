@@ -1,0 +1,36 @@
+﻿app-navbar {
+  position: relative;
+  z-index: 2000;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+app-footer {
+  position: relative;
+  z-index: 1900;
+}
+
+.app-main {
+  --chrome-top: 84px;
+  --chrome-bottom: 84px;
+  --content-gap: 16px;
+  background: transparent;
+  padding: calc(var(--chrome-top) + var(--content-gap)) 1rem calc(var(--chrome-bottom) + var(--content-gap));
+  max-width: 1220px;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--chrome-top) - var(--chrome-bottom));
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    --chrome-top: 86px;
+    --chrome-bottom: 84px;
+    --content-gap: 14px;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}

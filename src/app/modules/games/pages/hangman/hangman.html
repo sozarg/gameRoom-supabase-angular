@@ -1,0 +1,77 @@
+<section class="game-shell" [class.game-shell-loss]="gameEnded && !won">
+  <h1 class="game-title">{{ gameEnded && !won ? 'Juego del Ahorcado' : 'Ahorcado' }}</h1>
+
+  <!-- juego activo hasta resolver palabra o agotar intentos -->
+  <ng-container *ngIf="!gameEnded; else endScreen">
+    <p class="game-subtitle" *ngIf="loadingWord">Cargando palabra...</p>
+    <div class="stats-row" *ngIf="!loadingWord">
+      <p class="game-subtitle">Puntaje: <strong [class.negative-score]="score < 0">{{ score }}</strong></p>
+      <p class="game-subtitle">Aciertos: {{ correctGuesses }}</p>
+      <p class="game-subtitle">Errores: {{ wrongGuesses }} / {{ maxErrors }}</p>
+    </div>  
+
+    <div class="hangman-stage">
+      <img class="hangman-base" src="assets/ahorcado-dentro.png" alt="Estructura del ahorcado" draggable="false" />
+      <img *ngIf="showHead" class="hangman-part head" src="assets/cabeza-dentro.png" alt="Cabeza" draggable="false" />
+      <img *ngIf="showTorso" class="hangman-part torso" src="assets/torso-dentro.png" alt="Torso" draggable="false" />
+      <img *ngIf="showLeftArm" class="hangman-part arm left-arm" src="assets/brazo-dentro.png" alt="Brazo izquierdo" draggable="false" />
+      <img *ngIf="showRightArm" class="hangman-part arm right-arm" src="assets/brazo-dentro.png" alt="Brazo derecho" draggable="false" />
+      <img *ngIf="showLeftLeg" class="hangman-part leg left-leg" src="assets/pierna-dentro.png" alt="Pierna izquierda" draggable="false" />
+      <img *ngIf="showRightLeg" class="hangman-part leg right-leg" src="assets/pierna-dentro.png" alt="Pierna derecha" draggable="false" />
+    </div>
+
+    <div class="word">{{ maskedWord }}</div>
+
+    <div class="letters">
+      <button
+        *ngFor="let letter of letters"
+        type="button"
+        class="progra-btn progra-btn-secondary letter-btn"
+        [disabled]="isLetterDisabled(letter)"
+        (click)="chooseLetter(letter)"
+      >
+        {{ letter }}
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- pantalla final con resultado y estadisticas -->
+  <ng-template #endScreen>
+    <div class="end-screen" [class.end-screen-loss]="!won">
+      <div class="end-content">
+        <ng-container *ngIf="!won; else winScreen">
+          <h2 class="end-title end-title-loss-big">PERDISTE</h2>
+          <p class="end-subtitle end-label">La palabra era:</p>
+          <p class="end-word">{{ word }}</p>
+
+          <div class="end-detail-list">
+            <p class="game-subtitle">Tiempo jugado: {{ elapsedSeconds }}s</p>
+            <p class="game-subtitle">Aciertos: {{ correctGuesses }}</p>
+            <p class="game-subtitle">Errores: {{ wrongGuesses }} / {{ maxErrors }}</p>
+          </div>
+        </ng-container>
+
+        <ng-template #winScreen>
+          <h2 class="end-title end-title-win">Ganaste la partida</h2>
+          <p class="end-subtitle">{{ mensaje }}</p>
+          <p class="end-subtitle"><strong>Palabra correcta:</strong> {{ word }}</p>
+
+          <div class="stats-row end-stats">
+            <p class="game-subtitle">Puntaje final: {{ score }}</p>
+            <p class="game-subtitle">Aciertos: {{ correctGuesses }}</p>
+            <p class="game-subtitle">Errores: {{ wrongGuesses }} / {{ maxErrors }}</p>
+            <p class="game-subtitle">Tiempo: {{ elapsedSeconds }}s</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="progra-btn progra-btn-primary" (click)="startNewGame()">
+          Reiniciar partida
+        </button>
+        <a class="progra-btn progra-btn-secondary" routerLink="/home">Volver al inicio</a>
+      </div>
+    </div>
+  </ng-template>
+</section>
+

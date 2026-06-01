@@ -1,0 +1,37 @@
+<section class="about-shell">
+  <article class="about-card">
+    @if (userData()) {
+      <header class="profile-head">
+        <img [src]="userData().avatar_url" alt="Foto de perfil de GitHub" class="avatar" />
+        <h1 class="profile-name">{{ userData().name || userData().login }}</h1>
+        <p class="profile-bio">{{ userData().bio || 'Estudiante de Programación IV - UTN FRA' }}</p>
+        <p class="profile-stat">Repositorios públicos: {{ userData().public_repos }}</p>
+        <a [href]="userData().html_url" target="_blank" rel="noopener noreferrer" class="github-link">
+          Ver perfil de GitHub
+        </a>
+      </header>
+    } @else {
+      <div class="loading">
+        <p>Cargando datos de GitHub...</p>
+      </div>
+    }
+
+    <section class="info-block">
+      <h2>Sobre mí</h2>
+      <p>
+        Soy Mateo Terrile, tengo 22 años y actualmente trabajo como desarrollador backend para la
+        Municipalidad de Avellaneda. Tengo experiencia explorando proyectos creativos con Three.js
+        y esta es mi primera vez trabajando con Angular.
+      </p>
+    </section>
+
+    <section class="info-block">
+      <h2>Juego propio: Escapa de la habitación</h2>
+      <p>
+        Este juego consiste en explorar una habitación e interactuar con distintos objetos. El
+        objetivo es salir resolviendo secuencias lógicas: abrir cofres, encontrar objetos clave y
+        encadenar pistas para conseguir la llave de salida.
+      </p>
+    </section>
+  </article>
+</section>
