@@ -14,10 +14,7 @@ yarn-error.log*
 # IDE/editor
 .idea/
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+skills-lock.json
 
 # OS files
 .DS_Store

@@ -1,16 +1,12 @@
 # SalaJuegos
 
-## Public repository checklist
+## Public repository notes
 
-Before publishing this project, configure your own Supabase values:
+This frontend uses a Supabase publishable key in `src/environments/environment.ts` (client-side key, not `service_role`).
 
-1. Open `src/environments/environment.ts`.
-2. Replace:
-   - `REPLACE_WITH_YOUR_SUPABASE_URL`
-   - `REPLACE_WITH_YOUR_SUPABASE_PUBLISHABLE_KEY`
-3. Do not commit private keys (`service_role`, database passwords, personal access tokens).
-
-If this project was ever deployed with old credentials, rotate those credentials in Supabase before publishing.
+Security reminder:
+- Never commit private keys (`service_role`, database passwords, personal access tokens).
+- Keep RLS enabled and correctly configured in Supabase.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
 
