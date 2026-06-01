@@ -15,7 +15,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class Register {
   private readonly authTimeoutMs = 3500;
-  private readonly namePattern = /^[A-Za-zÁÉÍÓÚáéíóúÑñ' -]+$/;
+  private readonly namePattern = /^[A-Za-zÃÃ‰ÃÃ“ÃšÃ¡Ã©Ã­Ã³ÃºÃ‘Ã±' -]+$/;
   private readonly t = inject(TranslateService);
 
   registerForm: FormGroup;

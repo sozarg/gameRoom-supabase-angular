@@ -41,7 +41,7 @@ export class Preguntados implements OnInit {
   gameOver = false;
   status: 'win' | 'loss' | null = null;
   errorCarga = '';
-  mensaje = 'Elegí el país correcto según la bandera.';
+  mensaje = 'ElegÃ­ el paÃ­s correcto segÃºn la bandera.';
   messageTone: 'neutral' | 'success' | 'error' = 'neutral';
   lastAnswerCorrect: boolean | null = null;
   startTime = 0;
@@ -80,7 +80,7 @@ export class Preguntados implements OnInit {
     this.lastCorrectCountryName = '';
     this.answerLocked = false;
     this.lastAnswerCorrect = null;
-    this.mensaje = 'Elegí el país correcto según la bandera.';
+    this.mensaje = 'ElegÃ­ el paÃ­s correcto segÃºn la bandera.';
     this.messageTone = 'neutral';
     this.startTime = Date.now();
     this.elapsedSeconds = 0;
@@ -118,14 +118,14 @@ export class Preguntados implements OnInit {
       scoreDelta = 5;
       this.score += scoreDelta;
       this.correctAnswers += 1;
-      this.mensaje = '¡Correcto!';
+      this.mensaje = 'Â¡Correcto!';
       this.messageTone = 'success';
     } else {
       scoreDelta = this.score > 0 ? -Math.min(2, this.score) : 0;
       this.score = Math.max(0, this.score - 2);
       this.wrongAnswers += 1;
       this.livesLost += 1;
-      this.mensaje = '¡Incorrecto!';
+      this.mensaje = 'Â¡Incorrecto!';
       this.messageTone = 'error';
     }
 
@@ -163,7 +163,7 @@ export class Preguntados implements OnInit {
       if (!this.currentQuestion) {
         this.gameOver = true;
         this.status = 'win';
-        this.mensaje = 'No hay más países disponibles. Ganaste la ronda.';
+        this.mensaje = 'No hay mÃ¡s paÃ­ses disponibles. Ganaste la ronda.';
         this.messageTone = 'success';
         void this.saveResult(this.createSnapshotResult('win'));
       }

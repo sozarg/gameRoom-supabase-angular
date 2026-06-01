@@ -30,16 +30,16 @@ export class CountriesApi {
     { code: 'UY', names: { es: 'Uruguay', en: 'Uruguay' }, flag: 'https://flagcdn.com/w320/uy.png' },
     { code: 'BR', names: { es: 'Brasil', en: 'Brazil' }, flag: 'https://flagcdn.com/w320/br.png' },
     { code: 'CL', names: { es: 'Chile', en: 'Chile' }, flag: 'https://flagcdn.com/w320/cl.png' },
-    { code: 'PE', names: { es: 'Perú', en: 'Peru' }, flag: 'https://flagcdn.com/w320/pe.png' },
-    { code: 'MX', names: { es: 'México', en: 'Mexico' }, flag: 'https://flagcdn.com/w320/mx.png' },
+    { code: 'PE', names: { es: 'PerÃº', en: 'Peru' }, flag: 'https://flagcdn.com/w320/pe.png' },
+    { code: 'MX', names: { es: 'MÃ©xico', en: 'Mexico' }, flag: 'https://flagcdn.com/w320/mx.png' },
     { code: 'US', names: { es: 'Estados Unidos', en: 'United States' }, flag: 'https://flagcdn.com/w320/us.png' },
-    { code: 'CA', names: { es: 'Canadá', en: 'Canada' }, flag: 'https://flagcdn.com/w320/ca.png' },
-    { code: 'ES', names: { es: 'España', en: 'Spain' }, flag: 'https://flagcdn.com/w320/es.png' },
+    { code: 'CA', names: { es: 'CanadÃ¡', en: 'Canada' }, flag: 'https://flagcdn.com/w320/ca.png' },
+    { code: 'ES', names: { es: 'EspaÃ±a', en: 'Spain' }, flag: 'https://flagcdn.com/w320/es.png' },
     { code: 'FR', names: { es: 'Francia', en: 'France' }, flag: 'https://flagcdn.com/w320/fr.png' },
     { code: 'DE', names: { es: 'Alemania', en: 'Germany' }, flag: 'https://flagcdn.com/w320/de.png' },
     { code: 'IT', names: { es: 'Italia', en: 'Italy' }, flag: 'https://flagcdn.com/w320/it.png' },
     { code: 'GB', names: { es: 'Reino Unido', en: 'United Kingdom' }, flag: 'https://flagcdn.com/w320/gb.png' },
-    { code: 'JP', names: { es: 'Japón', en: 'Japan' }, flag: 'https://flagcdn.com/w320/jp.png' },
+    { code: 'JP', names: { es: 'JapÃ³n', en: 'Japan' }, flag: 'https://flagcdn.com/w320/jp.png' },
     { code: 'AU', names: { es: 'Australia', en: 'Australia' }, flag: 'https://flagcdn.com/w320/au.png' }
   ];
 

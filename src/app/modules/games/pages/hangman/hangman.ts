@@ -44,7 +44,7 @@ export class Hangman implements OnInit {
 
   get letters() {
     return this.i18n.getCurrentLanguage() === 'es'
-      ? 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('')
+      ? 'ABCDEFGHIJKLMNÃ‘OPQRSTUVWXYZ'.split('')
       : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   }
 
