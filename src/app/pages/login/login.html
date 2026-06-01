@@ -5,6 +5,12 @@
       <p class="progra-text text-sm">Ingresa tus credenciales para acceder a la sala</p>
     </div>
 
+    <div class="grid grid-cols-3 gap-3 mb-8">
+      <button type="button" appInteraction (click)="completeQuickAccess('admin')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Admin</button>
+      <button type="button" appInteraction (click)="completeQuickAccess('usuario')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Usuario</button>
+      <button type="button" appInteraction (click)="completeQuickAccess('invitado')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Invitado</button>
+    </div>
+
     <!-- formulario reactivo de login -->    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <div>
         <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Correo electrónico</label>
@@ -43,5 +49,6 @@
     </div>
   </div>
 </div>
+
 
 

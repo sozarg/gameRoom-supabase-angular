@@ -33,6 +33,23 @@ export class Login {
     });
   }
 
+  completeQuickAccess(profile: string) {
+    // autocompleta credenciales demo para pruebas rapidas
+    const credentials: Record<string, { email: string; password: string }> = {
+      admin: { email: 'admin@sala.com', password: 'passwordadmin' },
+      usuario: { email: 'usuario@sala.com', password: 'passworduser' },
+      invitado: { email: 'invitado@sala.com', password: 'passwordguest' },
+    };
+
+    const account = credentials[profile];
+    if (!account) {
+      return;
+    }
+
+    this.loginForm.patchValue(account);
+    this.errorMessage = null;
+  }
+
   async onSubmit() {
     // evita doble submit mientras hay un intento en curso
     if (this.loading) {
