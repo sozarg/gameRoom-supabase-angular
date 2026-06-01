@@ -1,49 +1,134 @@
-# SalaJuegos
+# GameRoom
 
-## Public repository notes
+High-performance browser game platform built with Angular and Supabase.
 
-This frontend uses a Supabase publishable key in `src/environments/environment.ts` (client-side key, not `service_role`).
+Academic project developed for university coursework and delivered with top-grade quality standards, including production-style architecture, real-time features, authentication, and game result persistence.
 
-Security reminder:
-- Never commit private keys (`service_role`, database passwords, personal access tokens).
-- Keep RLS enabled and correctly configured in Supabase.
+---
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+## Project Overview
 
-## Development server
+GameRoom is a multi-game web application that combines:
 
-To start a local development server, run:
+- User authentication and profile management
+- Real-time global chat
+- Multiple game modes in a single platform
+- Persistent scoreboards and results history
+- Responsive UI with a cohesive retro-inspired visual identity
+
+The goal was to design and implement a complete, end-to-end product that feels like a real production application instead of a classroom prototype.
+
+---
+
+## Core Features
+
+- Secure sign up and login flow with Supabase Auth
+- Route protection through Angular guards
+- Real-time chat powered by Supabase Realtime channels
+- Live leaderboard updates for all games
+- Game modules:
+  - Hangman
+  - Higher / Lower
+  - Preguntados-style trivia
+  - Escape Room challenge
+- Result tracking with score, duration, and status
+- Standalone Angular components and modular routing
+
+---
+
+## Architecture
+
+- Frontend framework: Angular 21 (standalone APIs)
+- Backend-as-a-service: Supabase
+- Data access layer centralized in a dedicated service
+- Feature-based routing for game modules
+- Reusable directives/components for interaction and UI consistency
+
+---
+
+## Tech Stack
+
+- Angular
+- TypeScript
+- RxJS
+- Supabase (`@supabase/supabase-js`)
+- Tailwind CSS
+- Vercel (deployment)
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/sozarg/gameRoom-supabase-angular.git
+cd gameRoom-supabase-angular
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure Supabase
+
+Open:
+
+`src/environments/environment.ts`
+
+Set your project values:
+
+```ts
+export const environment = {
+  supabaseUrl: 'https://YOUR_PROJECT.supabase.co',
+  supabaseKey: 'YOUR_SUPABASE_PUBLISHABLE_KEY',
+};
+```
+
+Important security notes:
+
+- Use only the publishable (public/client) key in the frontend
+- Never expose `service_role` keys in client code
+- Keep RLS enabled and validated in all public tables
+
+### 4. Run the project locally
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open:
 
-## Code scaffolding
+`http://localhost:4200/`
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Build
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Production output is generated in:
 
-## Additional Resources
+`dist/`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## Deployment
+
+This project is compatible with Vercel and can be deployed directly from the repository.
+
+Recommended production workflow:
+
+- Connect repository in Vercel
+- Add environment/config values if needed
+- Enable automatic deploys from `main`
+
+---
+
+## License
+
+This repository is published for academic and portfolio purposes.
