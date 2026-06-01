@@ -1,19 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Supabase } from '../../services/supabase';
 import { InteractionDirective } from '../../directives/interaction-directive';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, InteractionDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InteractionDirective, TranslateModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
   private readonly authTimeoutMs = 3500;
+  private readonly t = inject(TranslateService);
 
   loginForm: FormGroup;
   errorMessage: string | null = null;
@@ -26,7 +28,6 @@ export class Login {
     private supabaseService: Supabase,
     private router: Router
   ) {
-    // formulario reactivo con reglas minimas para validar antes de pedir auth
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(72)]],
@@ -34,7 +35,6 @@ export class Login {
   }
 
   completeQuickAccess(profile: string) {
-    // autocompleta credenciales demo para pruebas rapidas
     const credentials: Record<string, { email: string; password: string }> = {
       admin: { email: 'admin@sala.com', password: 'passwordadmin' },
       usuario: { email: 'usuario@sala.com', password: 'passworduser' },
@@ -42,19 +42,14 @@ export class Login {
     };
 
     const account = credentials[profile];
-    if (!account) {
-      return;
-    }
+    if (!account) return;
 
     this.loginForm.patchValue(account);
     this.errorMessage = null;
   }
 
   async onSubmit() {
-    // evita doble submit mientras hay un intento en curso
-    if (this.loading) {
-      return;
-    }
+    if (this.loading) return;
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -66,7 +61,6 @@ export class Login {
 
     try {
       const { email, password } = this.loginForm.value;
-      // si auth demora demasiado mostramos error controlado
       const { error } = await this.withAuthTimeout(this.supabaseService.iniciarSesion(email, password));
 
       if (error) {
@@ -83,19 +77,16 @@ export class Login {
   }
 
   closeModal() {
-    // limpia estado del modal para reusarlo en el proximo error
     this.showModal = false;
     this.modalMessage = '';
   }
 
   private openModal(message: string) {
-    // modal unico para centralizar mensajes de error de auth
     this.modalMessage = message;
     this.showModal = true;
   }
 
   private withAuthTimeout<T>(operation: Promise<T>): Promise<T> {
-    // timeout defensivo para no dejar la ui esperando indefinidamente
     const timeout = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error('AUTH_TIMEOUT')), this.authTimeoutMs);
     });
@@ -104,25 +95,13 @@ export class Login {
   }
 
   private mapLoginError(message: string) {
-    // traduce errores tecnicos de auth a mensajes amigables para el usuario
     const normalized = message.toLowerCase();
 
-    if (normalized.includes('auth_timeout')) {
-      return 'La validación está tardando más de lo esperado. Intenta nuevamente.';
-    }
+    if (normalized.includes('auth_timeout')) return this.t.instant('auth.timeout');
+    if (normalized.includes('invalid login credentials')) return this.t.instant('auth.invalid_credentials');
+    if (normalized.includes('email not confirmed')) return this.t.instant('auth.email_confirm');
+    if (normalized.includes('rate limit')) return this.t.instant('auth.rate_limit');
 
-    if (normalized.includes('invalid login credentials')) {
-      return 'Credenciales inválidas. Revisa correo y contraseña.';
-    }
-
-    if (normalized.includes('email not confirmed')) {
-      return 'La cuenta requiere confirmación de correo.';
-    }
-
-    if (normalized.includes('rate limit')) {
-      return 'Demasiados intentos. Espera un momento y vuelve a intentar.';
-    }
-
-    return 'No se pudo iniciar sesión en este momento. Reintenta.';
+    return this.t.instant('auth.generic_login_error');
   }
 }

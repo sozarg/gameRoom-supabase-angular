@@ -1,21 +1,22 @@
-﻿import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Supabase } from '../../services/supabase';
 import { InteractionDirective } from '../../directives/interaction-directive';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, InteractionDirective],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InteractionDirective, TranslateModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
 export class Register {
   private readonly authTimeoutMs = 3500;
-  // permite letras, acentos, espacios y apostrofes en nombre/apellido
-  private readonly namePattern = /^[A-Za-zÁÉÍÓÚáéíóúÑñ' -]+$/;
+  private readonly namePattern = /^[A-Za-z������������' -]+$/;
+  private readonly t = inject(TranslateService);
 
   registerForm: FormGroup;
   errorMessage: string | null = null;
@@ -28,7 +29,6 @@ export class Register {
     private supabaseService: Supabase,
     private router: Router
   ) {
-    // formulario reactivo con validaciones de alta de usuario
     this.registerForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern(this.namePattern)]],
       lastName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30), Validators.pattern(this.namePattern)]],
@@ -37,15 +37,11 @@ export class Register {
       password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(72)]],
     });
 
-    // si ya hay sesion abierta, no tiene sentido quedarse en register
     this.handleAuthenticatedUserOnRegister();
   }
 
   async onRegister() {
-    // evita doble submit mientras se registra
-    if (this.loading) {
-      return;
-    }
+    if (this.loading) return;
 
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -59,9 +55,7 @@ export class Register {
       const { email, password, firstName, lastName, age } = this.registerForm.value;
       const parsedAge = Number(age);
 
-      const { data, error } = await this.withAuthTimeout(
-        this.supabaseService.signUp(email, password, firstName)
-      );
+      const { data, error } = await this.withAuthTimeout(this.supabaseService.signUp(email, password, firstName));
 
       if (error) {
         this.openModal(this.mapAuthError(error.message));
@@ -69,31 +63,22 @@ export class Register {
       }
 
       if (!data.user) {
-        this.openModal('No se pudo crear el usuario.');
+        this.openModal(this.t.instant('auth.signup_user_error'));
         return;
       }
 
-      const { error: profileError } = await this.supabaseService.saveUserProfile(
-        data.user.id,
-        firstName,
-        lastName,
-        parsedAge,
-        email
-      );
+      const { error: profileError } = await this.supabaseService.saveUserProfile(data.user.id, firstName, lastName, parsedAge, email);
 
       if (profileError) {
-        this.openModal('No se pudo guardar el perfil: ' + profileError.message);
+        this.openModal(this.t.instant('auth.signup_profile_error', { message: profileError.message }));
         return;
       }
 
       if (!data.session) {
-        // algunos providers crean usuario sin sesion, entonces logueamos manualmente
-        const { error: loginError } = await this.withAuthTimeout(
-          this.supabaseService.iniciarSesion(email, password)
-        );
+        const { error: loginError } = await this.withAuthTimeout(this.supabaseService.iniciarSesion(email, password));
 
         if (loginError) {
-          this.openModal('La cuenta se creó, pero no se pudo iniciar sesión: ' + this.mapAuthError(loginError.message));
+          this.openModal(this.t.instant('auth.signup_login_error', { message: this.mapAuthError(loginError.message) }));
           return;
         }
       }
@@ -107,19 +92,16 @@ export class Register {
   }
 
   closeModal() {
-    // limpia estado del modal para siguientes intentos
     this.showModal = false;
     this.modalMessage = '';
   }
 
   private openModal(message: string) {
-    // modal unico para centralizar mensajes de error de registro
     this.modalMessage = message;
     this.showModal = true;
   }
 
   private withAuthTimeout<T>(operation: Promise<T>): Promise<T> {
-    // timeout defensivo para no dejar bloqueada la pantalla de registro
     const timeout = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error('AUTH_TIMEOUT')), this.authTimeoutMs);
     });
@@ -128,42 +110,20 @@ export class Register {
   }
 
   private async handleAuthenticatedUserOnRegister() {
-    // guard de pagina: si ya esta autenticado redirige a home
     const user = await this.supabaseService.getCurrentUser();
-    if (!user) {
-      return;
-    }
-
+    if (!user) return;
     this.router.navigate(['/home']);
   }
 
   private mapAuthError(message: string) {
-    // mapea errores de supabase auth a textos claros para la ui
     const normalized = message.toLowerCase();
 
-    if (normalized.includes('auth_timeout')) {
-      return 'La operación está tardando más de lo esperado. Intentá nuevamente.';
-    }
+    if (normalized.includes('auth_timeout')) return this.t.instant('auth.signup_timeout');
+    if (normalized.includes('already registered')) return this.t.instant('auth.signup_email_exists');
+    if (normalized.includes('invalid login credentials')) return this.t.instant('auth.signup_validate_error');
+    if (normalized.includes('email not confirmed')) return this.t.instant('auth.email_confirm');
+    if (normalized.includes('rate limit')) return this.t.instant('auth.rate_limit');
 
-    if (normalized.includes('already registered')) {
-      return 'Ese correo ya está registrado.';
-    }
-
-    if (normalized.includes('invalid login credentials')) {
-      return 'No se pudo validar la cuenta recién creada. Iniciá sesión manualmente.';
-    }
-
-    if (normalized.includes('email not confirmed')) {
-      return 'La cuenta requiere confirmación por correo.';
-    }
-
-    if (normalized.includes('rate limit')) {
-      return 'Hay demasiados intentos. Esperá un momento y volvé a probar.';
-    }
-
-    return 'Error en Auth: ' + message;
+    return this.t.instant('auth.signup_auth_error', { message });
   }
 }
-
-
-

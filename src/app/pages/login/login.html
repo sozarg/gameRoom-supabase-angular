@@ -1,47 +1,47 @@
 <div class="auth-page">
   <div class="auth-card neo-card">
     <div class="text-center mb-8">
-      <h1 class="progra-title !mb-2">Iniciar Sesión</h1>
-      <p class="progra-text text-sm">Ingresa tus credenciales para acceder a la sala</p>
+      <h1 class="progra-title !mb-2">{{ 'auth.login_title' | translate }}</h1>
+      <p class="progra-text text-sm">{{ 'auth.login_subtitle' | translate }}</p>
     </div>
 
     <div class="grid grid-cols-3 gap-3 mb-8">
-      <button type="button" appInteraction (click)="completeQuickAccess('admin')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Admin</button>
-      <button type="button" appInteraction (click)="completeQuickAccess('usuario')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Usuario</button>
-      <button type="button" appInteraction (click)="completeQuickAccess('invitado')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">Invitado</button>
+      <button type="button" appInteraction (click)="completeQuickAccess('admin')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">{{ 'auth.quick_admin' | translate }}</button>
+      <button type="button" appInteraction (click)="completeQuickAccess('usuario')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">{{ 'auth.quick_user' | translate }}</button>
+      <button type="button" appInteraction (click)="completeQuickAccess('invitado')" class="progra-btn progra-btn-secondary text-xs px-2 py-2">{{ 'auth.quick_guest' | translate }}</button>
     </div>
 
-    <!-- formulario reactivo de login -->    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
       <div>
-        <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Correo electrónico</label>
-        <input type="email" formControlName="email" class="progra-input py-2" placeholder="ejemplo@correo.com">
+        <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">{{ 'auth.email' | translate }}</label>
+        <input type="email" formControlName="email" class="progra-input py-2" placeholder="example@mail.com">
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">Contraseña</label>
+        <label class="block text-sm font-medium text-[var(--ink-soft)] mb-1">{{ 'auth.password' | translate }}</label>
         <input type="password" formControlName="password" class="progra-input py-2" placeholder="********">
       </div>
 
       <button type="submit" appInteraction class="progra-btn progra-btn-primary w-full py-3 flex items-center justify-center">
-        <span *ngIf="!loading">Ingresar</span>
-        <span *ngIf="loading" class="animate-pulse">Verificando...</span>
+        <span *ngIf="!loading">{{ 'auth.login_btn' | translate }}</span>
+        <span *ngIf="loading" class="animate-pulse">{{ 'auth.verifying' | translate }}</span>
       </button>
     </form>
 
-    <!-- modal de error controlado para auth -->    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/25 px-4" (click)="closeModal()">
+    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/25 px-4" (click)="closeModal()">
       <div class="neo-card w-full max-w-sm p-6" (click)="$event.stopPropagation()">
-        <h2 class="text-lg font-bold text-[var(--ink)] mb-2">No se pudo continuar</h2>
+        <h2 class="text-lg font-bold text-[var(--ink)] mb-2">{{ 'auth.error_title' | translate }}</h2>
         <p class="text-sm text-[var(--ink-soft)]">{{ modalMessage }}</p>
         <div class="mt-5 flex justify-end">
-          <button type="button" class="progra-btn progra-btn-primary" (click)="closeModal()">Cerrar</button>
+          <button type="button" class="progra-btn progra-btn-primary" (click)="closeModal()">{{ 'common.close' | translate }}</button>
         </div>
       </div>
     </div>
 
     <div class="mt-8 pt-6 border-t-2 border-[var(--line)] text-center">
       <p class="progra-text text-sm mb-4">
-        ¿No tenés cuenta?
-        <a routerLink="/register" class="text-[var(--ink)] font-semibold underline">Registrate acá</a>
+        {{ 'auth.no_account' | translate }}
+        <a routerLink="/register" class="text-[var(--ink)] font-semibold underline">{{ 'auth.signup_here' | translate }}</a>
       </p>
       <div class="flex justify-center">
         <img src="logo.png" alt="Logo" class="w-16 h-16 object-contain opacity-90">
@@ -49,6 +49,3 @@
     </div>
   </div>
 </div>
-
-
-

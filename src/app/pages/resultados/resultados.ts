@@ -1,8 +1,10 @@
-﻿import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { Supabase } from '../../services/supabase';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { I18nService } from '../../services/i18n.service';
 
 type RowBase = {
   user_id: string;
@@ -16,13 +18,15 @@ type RowWithPlayer<T> = T & { player: string };
 @Component({
   selector: 'app-resultados',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './resultados.html',
   styleUrl: './resultados.css',
 })
 export class Resultados implements OnInit, OnDestroy {
   private readonly supabase = inject(Supabase);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly t = inject(TranslateService);
+  private readonly i18n = inject(I18nService);
   private resultsChannel: RealtimeChannel | null = null;
   // evita recargas superpuestas cuando llegan varios eventos realtime juntos
   private reloadInFlight = false;
@@ -77,7 +81,7 @@ export class Resultados implements OnInit, OnDestroy {
       ]);
 
       if (hangmanRes.error || higherRes.error || preguntadosRes.error || escapeRes.error) {
-        throw new Error('No se pudieron cargar los resultados.');
+        throw new Error(this.t.instant('results.load_error'));
       }
 
       const hangmanRows = (hangmanRes.data ?? []) as any[];
@@ -97,7 +101,7 @@ export class Resultados implements OnInit, OnDestroy {
       this.preguntados = preguntadosRows.map((row) => ({ ...row, player: this.getPlayerName(row.user_id, playerMap) }));
       this.escapeRoom = escapeRows.map((row) => ({ ...row, player: this.getPlayerName(row.user_id, playerMap) }));
     } catch {
-      this.error = 'No se pudieron cargar los rankings en este momento.';
+      this.error = this.t.instant('results.load_error');
     } finally {
       this.loading = false;
       this.reloadInFlight = false;
@@ -133,7 +137,7 @@ export class Resultados implements OnInit, OnDestroy {
 
   private getPlayerName(userId: string, map: Map<string, string>) {
     // fallback si no hay perfil: muestra identificador corto
-    return map.get(userId) ?? `Jugador ${userId.slice(0, 6)}`;
+    return map.get(userId) ?? this.t.instant('results.player_fallback', { id: userId.slice(0, 6) });
   }
 
   rank(index: number) {
@@ -155,7 +159,8 @@ export class Resultados implements OnInit, OnDestroy {
   }
 
   formatDate(iso: string) {
-    return new Date(iso).toLocaleString('es-UY');
+    const locale = this.i18n.getCurrentLanguage() === 'es' ? 'es-UY' : 'en-US';
+    return new Date(iso).toLocaleString(locale);
   }
 
   formatTime(totalSeconds: number) {

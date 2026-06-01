@@ -3,116 +3,29 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Supabase } from '../../../../services/supabase';
 import { HangmanResult } from '../../../../types/game.types';
+import { I18nService } from '../../../../services/i18n.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-hangman',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './hangman.html',
   styleUrls: ['./hangman.css'],
 })
 export class Hangman implements OnInit {
   private readonly supabase = inject(Supabase);
+  private readonly i18n = inject(I18nService);
+  private readonly t = inject(TranslateService);
 
-  private readonly wordBank = [
-    'MURCIELAGO',
-    'PROGRAMACION',
-    'ANGULAR',
-    'SUPABASE',
-    'FACULTAD',
-    'JAVASCRIPT',
-    'COMPUTADORA',
-    'TECLADO',
-    'MONITOR',
-    'ALGORITMO',
-    'VARIABLE',
-    'FUNCION',
-    'OBJETO',
-    'INTERFAZ',
-    'SERVIDOR',
-    'CLIENTE',
-    'BASEDEDATOS',
-    'DESARROLLO',
-    'INGENIERIA',
-    'SISTEMA',
-    'ELECTRONICA',
-    'MATEMATICA',
-    'FISICA',
-    'QUIMICA',
-    'BIOLOGIA',
-    'ASTRONOMIA',
-    'GALAXIA',
-    'PLANETA',
-    'SATELITE',
-    'UNIVERSO',
-    'MONTANA',
-    'DESIERTO',
-    'BOSQUE',
-    'OCEANO',
-    'TORMENTA',
-    'RELAMPAGO',
-    'HURACAN',
-    'PRIMAVERA',
-    'VERANO',
-    'OTONIO',
-    'INVIERNO',
-    'BICICLETA',
-    'AEROPUERTO',
-    'CAMINATA',
-    'ENTRENAMIENTO',
-    'COMPETENCIA',
-    'ESTRATEGIA',
-    'PACIENCIA',
-    'DESAFIO',
-    'VICTORIA',
-    'DERROTA',
-    'APRENDIZAJE',
-    'CREATIVIDAD',
-    'PERSISTENCIA',
-    'COMUNICACION',
-    'COLABORACION',
-    'RESPONSABILIDAD',
-    'CURIOSIDAD',
-    'DISCIPLINA',
-    'CONCENTRACION',
-    'IMAGINACION',
-    'TECNICO',
-    'PROFESIONAL',
-    'PROYECTO',
-    'CODIGO',
-    'DEPURACION',
-    'TESTING',
-    'ARQUITECTURA',
-    'CONTENEDOR',
-    'PIPELINE',
-    'GITHUB',
-    'NAVEGADOR',
-    'APLICACION',
-    'MODULAR',
-    'ROUTING',
-    'COMPONENTE',
-    'DIRECTIVA',
-    'SERVICIO',
-    'VALIDACION',
-    'FORMULARIO',
-    'SEGURIDAD',
-    'AUTENTICACION',
-    'AUTORIZACION',
-    'JUGADOR',
-    'PUNTAJE',
-    'CRONOMETRO',
-    'ESTADISTICA',
-    'RESULTADO',
-    'PARTIDA',
-    'TABLERO',
-    'PALABRA',
-    'LETRA',
-    'INTENTO',
-    'ACIERTO',
-    'ERROR',
+  private readonly wordBankEs = [
+    'MURCIELAGO','PROGRAMACION','ANGULAR','SUPABASE','FACULTAD','JAVASCRIPT','COMPUTADORA','TECLADO','MONITOR','ALGORITMO','VARIABLE','FUNCION','OBJETO','INTERFAZ','SERVIDOR','CLIENTE','BASEDEDATOS','DESARROLLO','INGENIERIA','SISTEMA','ELECTRONICA','MATEMATICA','FISICA','QUIMICA','BIOLOGIA','ASTRONOMIA','GALAXIA','PLANETA','SATELITE','UNIVERSO'
   ];
 
-  readonly letters = 'ABCDEFGHIJKLMN\u00d1OPQRSTUVWXYZ'.split('');
+  private readonly wordBankEn = [
+    'BAT','PROGRAMMING','ANGULAR','SUPABASE','COLLEGE','JAVASCRIPT','COMPUTER','KEYBOARD','MONITOR','ALGORITHM','VARIABLE','FUNCTION','OBJECT','INTERFACE','SERVER','CLIENT','DATABASE','DEVELOPMENT','ENGINEERING','SYSTEM','ELECTRONICS','MATHEMATICS','PHYSICS','CHEMISTRY','BIOLOGY','ASTRONOMY','GALAXY','PLANET','SATELLITE','UNIVERSE'
+  ];
+
   readonly maxErrors = 6;
 
   word = '';
@@ -128,6 +41,12 @@ export class Hangman implements OnInit {
   startTime = 0;
   elapsedSeconds = 0;
   mensaje = '';
+
+  get letters() {
+    return this.i18n.getCurrentLanguage() === 'es'
+      ? 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('')
+      : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  }
 
   ngOnInit() {
     this.startNewGame();
@@ -152,7 +71,6 @@ export class Hangman implements OnInit {
   }
 
   startNewGame() {
-    // reinicia todo el estado de partida para empezar ronda limpia
     this.loadingWord = true;
     this.gameEnded = false;
     this.won = false;
@@ -170,7 +88,6 @@ export class Hangman implements OnInit {
   }
 
   async chooseLetter(letter: string) {
-    // procesa intento y actualiza puntaje/estado segun acierto o error
     if (this.isLetterDisabled(letter)) {
       return;
     }
@@ -191,17 +108,17 @@ export class Hangman implements OnInit {
     const lost = this.errors >= this.maxErrors;
 
     if (solved || lost) {
-      // al terminar, calcula duracion y persiste resultado del jugador
       this.gameEnded = true;
       this.won = solved;
       this.elapsedSeconds = Math.floor((Date.now() - this.startTime) / 1000);
-      this.mensaje = solved ? 'Ganaste la ronda.' : `Perdiste. La palabra era ${this.word}.`;
+      this.mensaje = solved
+        ? this.t.instant('games.hangman.win_round')
+        : this.t.instant('games.hangman.loss_round', { word: this.word });
       await this.guardarResultado(this.crearSnapshotResultado());
     }
   }
 
   private crearSnapshotResultado(): HangmanResult {
-    // snapshot inmutable del cierre de partida para guardar en db
     return {
       user_id: '',
       word: this.word,
@@ -217,21 +134,15 @@ export class Hangman implements OnInit {
   }
 
   private async guardarResultado(snapshot: HangmanResult) {
-    // solo guarda si hay sesion autenticada
     const user = await this.supabase.getCurrentUser();
-    if (!user) {
-      return;
-    }
+    if (!user) return;
 
-    await this.supabase.saveHangmanResult({
-      ...snapshot,
-      user_id: user.id,
-    });
+    await this.supabase.saveHangmanResult({ ...snapshot, user_id: user.id });
   }
 
   private getWordFromBank() {
-    // seleccion aleatoria simple del banco local
-    const index = Math.floor(Math.random() * this.wordBank.length);
-    return this.wordBank[index];
+    const bank = this.i18n.getCurrentLanguage() === 'es' ? this.wordBankEs : this.wordBankEn;
+    const index = Math.floor(Math.random() * bank.length);
+    return bank[index];
   }
 }

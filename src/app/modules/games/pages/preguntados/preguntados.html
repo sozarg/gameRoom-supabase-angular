@@ -15,7 +15,7 @@
 
   <div class="question-card" *ngIf="currentQuestion as question">
     <p class="question-label">¿De qué país es esta bandera?</p>
-    <img class="flag-image" [src]="question.country.flag" [alt]="'Bandera de ' + question.country.name" />
+    <img class="flag-image" [src]="question.country.flag" [alt]="'Bandera de ' + getName(question.country)" />
     <div class="options-grid">
       <button
         *ngFor="let option of question.options"
@@ -80,5 +80,7 @@
     </section>
   </ng-template>
 </section>
+
+
 
 

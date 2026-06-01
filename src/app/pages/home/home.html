@@ -1,86 +1,68 @@
-﻿<div class="home-shell">
-  <!-- vista para usuario autenticado -->
+<div class="home-shell">
   <section class="home-hero" *ngIf="user$ | async as user; else guestView">
     <div class="welcome-tag">
-      <h1 class="home-title">Bienvenido, {{ displayName || user.user_metadata?.firstName || 'Usuario' }}</h1>
+      <h1 class="home-title">{{ 'home.welcome' | translate:{ name: (displayName || user.user_metadata?.firstName || ('common.guest' | translate)) } }}</h1>
     </div>
   </section>
 
-  <!-- catalogo de juegos visible solo con sesion -->
   <section class="games-section" *ngIf="user$ | async as user">
     <div class="games-grid">
       <app-game-card appInteraction>
-        <h3 title class="progra-subtitle">Chat global</h3>
+        <h3 title class="progra-subtitle">{{ 'home.chat_title' | translate }}</h3>
         <div class="game-body game-body-horizontal">
-          <img src="assets/chat-global-juego-thumb.webp" alt="Chat global" loading="eager" decoding="async" fetchpriority="high">
-          <div class="game-copy">
-            <p class="progra-text">Habla con otros jugadores mientras esperas tu próxima partida.</p>
-          </div>
-          <button type="button" routerLink="/juegos/chat" class="progra-btn progra-btn-primary game-enter-btn">Entrar</button>
+          <img src="assets/chat-global-juego-thumb.webp" [alt]="'home.chat_title' | translate" loading="eager" decoding="async" fetchpriority="high">
+          <div class="game-copy"><p class="progra-text">{{ 'home.chat_desc' | translate }}</p></div>
+          <button type="button" routerLink="/juegos/chat" class="progra-btn progra-btn-primary game-enter-btn">{{ 'home.enter' | translate }}</button>
         </div>
       </app-game-card>
 
       <app-game-card appInteraction>
-        <h3 title class="progra-subtitle">Ahorcado</h3>
+        <h3 title class="progra-subtitle">{{ 'home.hangman_title' | translate }}</h3>
         <div class="game-body game-body-horizontal">
-          <img src="assets/ahorcado-juego-thumb.webp" alt="Ahorcado" loading="lazy" decoding="async">
-          <div class="game-copy">
-            <p class="progra-text">Descubrí la palabra antes de quedarte sin intentos.</p>
-          </div>
-          <button type="button" routerLink="/juegos/ahorcado" class="progra-btn progra-btn-primary game-enter-btn">Entrar</button>
+          <img src="assets/ahorcado-juego-thumb.webp" [alt]="'home.hangman_title' | translate" loading="lazy" decoding="async">
+          <div class="game-copy"><p class="progra-text">{{ 'home.hangman_desc' | translate }}</p></div>
+          <button type="button" routerLink="/juegos/ahorcado" class="progra-btn progra-btn-primary game-enter-btn">{{ 'home.enter' | translate }}</button>
         </div>
       </app-game-card>
 
       <app-game-card appInteraction>
-        <h3 title class="progra-subtitle">Mayor o Menor</h3>
+        <h3 title class="progra-subtitle">{{ 'home.higher_title' | translate }}</h3>
         <div class="game-body game-body-horizontal">
-          <img src="assets/mayor-menor-juego-thumb.webp" alt="Mayor o Menor" loading="lazy" decoding="async">
-          <div class="game-copy">
-            <p class="progra-text">Adivina la próxima carta y sostené tu racha.</p>
-          </div>
-          <button type="button" routerLink="/juegos/mayor-o-menor" class="progra-btn progra-btn-primary game-enter-btn">Entrar</button>
+          <img src="assets/mayor-menor-juego-thumb.webp" [alt]="'home.higher_title' | translate" loading="lazy" decoding="async">
+          <div class="game-copy"><p class="progra-text">{{ 'home.higher_desc' | translate }}</p></div>
+          <button type="button" routerLink="/juegos/mayor-o-menor" class="progra-btn progra-btn-primary game-enter-btn">{{ 'home.enter' | translate }}</button>
         </div>
       </app-game-card>
 
       <app-game-card appInteraction>
-        <h3 title class="progra-subtitle">Preguntados</h3>
+        <h3 title class="progra-subtitle">{{ 'home.trivia_title' | translate }}</h3>
         <div class="game-body game-body-horizontal">
-          <img src="assets/preguntados-juego-thumb.webp" alt="Preguntados" loading="lazy" decoding="async">
-          <div class="game-copy">
-            <p class="progra-text">Adivina de qué país es cada bandera y suma puntos.</p>
-          </div>
-          <button type="button" routerLink="/juegos/preguntados" class="progra-btn progra-btn-primary game-enter-btn">Entrar</button>
+          <img src="assets/preguntados-juego-thumb.webp" [alt]="'home.trivia_title' | translate" loading="lazy" decoding="async">
+          <div class="game-copy"><p class="progra-text">{{ 'home.trivia_desc' | translate }}</p></div>
+          <button type="button" routerLink="/juegos/preguntados" class="progra-btn progra-btn-primary game-enter-btn">{{ 'home.enter' | translate }}</button>
         </div>
       </app-game-card>
 
       <app-game-card appInteraction>
-        <h3 title class="progra-subtitle">Escapa de la habitación</h3>
+        <h3 title class="progra-subtitle">{{ 'home.escape_title' | translate }}</h3>
         <div class="game-body game-body-horizontal">
-          <img src="assets/habitacion-juego-thumb.webp" alt="Escapa" loading="lazy" decoding="async">
-          <div class="game-copy">
-            <p class="progra-text">Resuelve pistas, abrí la puerta y escapa a tiempo.</p>
-          </div>
-          <button type="button" routerLink="/juegos/escapa-de-la-habitacion" class="progra-btn progra-btn-primary game-enter-btn">Entrar</button>
+          <img src="assets/habitacion-juego-thumb.webp" [alt]="'home.escape_title' | translate" loading="lazy" decoding="async">
+          <div class="game-copy"><p class="progra-text">{{ 'home.escape_desc' | translate }}</p></div>
+          <button type="button" routerLink="/juegos/escapa-de-la-habitacion" class="progra-btn progra-btn-primary game-enter-btn">{{ 'home.enter' | translate }}</button>
         </div>
       </app-game-card>
     </div>
   </section>
 
-  <!-- fallback para invitado sin login -->
   <ng-template #guestView>
     <section class="guest-layout">
       <article class="guest-main-card">
-        <h1 class="guest-title">Contenido bloqueado</h1>
-        <p class="guest-text">
-          No puedes ver ni jugar ningún minijuego hasta que te registres o inicies sesión.
-          ¡Logeate y divertite!
-        </p>
-        <div class="guest-logo-wrap">
-          <img src="logo.png" alt="Logo" class="guest-logo">
-        </div>
+        <h1 class="guest-title">{{ 'home.blocked_title' | translate }}</h1>
+        <p class="guest-text">{{ 'home.blocked_text' | translate }}</p>
+        <div class="guest-logo-wrap"><img src="logo.png" alt="Logo" class="guest-logo"></div>
         <div class="guest-actions">
-          <button routerLink="/login" class="progra-btn progra-btn-primary">Iniciar sesión</button>
-          <button routerLink="/register" class="progra-btn progra-btn-secondary">Registrarse</button>
+          <button routerLink="/login" class="progra-btn progra-btn-primary">{{ 'home.login' | translate }}</button>
+          <button routerLink="/register" class="progra-btn progra-btn-secondary">{{ 'home.register' | translate }}</button>
         </div>
       </article>
     </section>
